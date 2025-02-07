@@ -25,7 +25,11 @@ export const signUpSchema = z.object({
     password: z
         .string()
         .min(8, { message: "Password must be at least 8 characters long" })
-        .max(20, { message: "Maximum limit of password is 20 characters" }),
+        .max(20, { message: "Maximum limit of password is 20 characters" })
+        .refine((password) => /[a-z]/.test(password), { message: "Password must contain at least one lowercase letter" })
+        .refine((password) => /[A-Z]/.test(password), { message: "Password must contain at least one uppercase letter" })
+        .refine((password) => /\d/.test(password), { message: "Password must contain at least one numeric" })
+        .refine((password) => /[@#$!_]/.test(password), { message: "Password must contain at least one special character (@/#/$/!/_)" }),
 
     confirmPassword: z.string()
 }).superRefine(({ password, confirmPassword }, ctx) => {
